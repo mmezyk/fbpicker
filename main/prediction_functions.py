@@ -378,11 +378,11 @@ class fbpicker():
                 start_time=time.time()
             sys.stdout.flush()
             
-    def find_fb(self,q=99.9):
+    def find_fbs(self,q=99.9):
         """ Finds the first maximum probability value of first-break occurence based on a given percentile """
         fbs=np.zeros((self.dataset['pred_avg'].shape[0],1))
         for itrc in np.arange(0,self.dataset['pred_avg'].shape[0]):
-            trc=d1['pred_avg'][itrc]
+            trc=self.dataset['pred_avg'][itrc]
             nonzero=np.where(trc!=0)[0]
             perc=np.nanpercentile(trc[list(nonzero)],q)
             potential_fbs=np.where(trc[:]>=perc)[0]
@@ -390,6 +390,7 @@ class fbpicker():
                 fbs[itrc]=np.int(potential_fbs[0])
             else:
                 print('FB was not found for trace id:\t{}'.format(itrc))
+        print('Completed')
         return fbs
     
     def find_approx_fb(self,min_offset,max_offset,min_cdp,max_cdp,offset_spacing,n_split=100):
@@ -404,7 +405,7 @@ class fbpicker():
                 tmp1=np.array_split(obin_trcs,n_split)   
                 if len(obin_trcs)>10:
                     for k,l in enumerate(tmp1):
-                        tmp0=d1['pred_avg'][list(tmp1[k]),:]
+                        tmp0=self.dataset['pred_avg'][list(tmp1[k]),:]
                         tmp2=np.sum(tmp0,axis=0)
                         tmp2=np.where(tmp2[:]==np.amax(tmp2))[0]
                         for m,n in enumerate(tmp1[k]):
